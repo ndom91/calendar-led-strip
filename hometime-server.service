@@ -1,0 +1,28 @@
+[Unit]
+Description=Hometime Calendar LED Server
+After=network.target
+
+[Service]
+Type=simple
+User=ndomino
+WorkingDirectory=/opt/ndomino/hometime
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+# Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+# Logging
+# StandardOutput=journal
+# StandardError=journal
+SyslogIdentifier=hometime-server
+
+# Security
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/ndomino/hometime
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

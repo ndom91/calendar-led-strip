@@ -91,7 +91,7 @@ export class LEDVisualizer {
       this.config.flip,
     );
     if (isValidIndex(currentIndex, this.config.ledCount)) {
-      pixels[currentIndex] = this.config.currentTimeColor as [number, number, number];
+      pixels[currentIndex] = this.config.currentTimeColor;
     }
 
     await this.wled.setLEDs(pixels);
