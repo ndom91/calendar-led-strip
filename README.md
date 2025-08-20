@@ -4,7 +4,7 @@
 
 A typescript rewrite of this [hometime](https://github.com/veebch/hometime) project. Instead of runnign this on a Raspberry Pi Pico, for example, this node script is run on a server in your house and will update a WLED-controlled LED Strip via its API.
 
-![example](./hometime.jpg)
+![example](./hometime.png)
 
 ## Features
 
