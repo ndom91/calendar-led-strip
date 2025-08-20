@@ -1,6 +1,6 @@
 # Hometime Server
 
-> A TypeScript server that visualizes work progress and calendar events on a WLED-controlled LED strip.
+> A TypeScript server that visualizes calendar events on a WLED-controlled LED strip.
 
 A typescript rewrite of this [hometime](https://github.com/veebch/hometime) project. Instead of runnign this on a Raspberry Pi Pico, for example, this node script is run on a server in your house and will update a WLED-controlled LED Strip via its API.
 
@@ -12,7 +12,6 @@ A typescript rewrite of this [hometime](https://github.com/veebch/hometime) proj
 - **Calendar Integration**: Uses `gcalcli` to fetch today's calendar events and highlights them on the strip
 - **WLED Integration**: Controls LED strips via WLED API at configurable IP address
 - **Configurable Schedule**: Set work hours for each day of the week
-- **Visual Effects**: Rainbow celebration when work day ends, flashing effects for events
 
 ## Setup
 
@@ -21,9 +20,9 @@ A typescript rewrite of this [hometime](https://github.com/veebch/hometime) proj
    pnpm install
    ```
 
-2. Make sure `gcalcli` is installed and configured on your system:
+2. Install `gcalcli` and init the authentication. For more details see their [API Auth](https://github.com/insanum/gcalcli/blob/main/docs/api-auth.md) docs.
    ```bash
-   pip install gcalcli
+   brew install gcalcli
    gcalcli init
    ```
 
@@ -56,7 +55,6 @@ Edit `src/config.ts` to customize:
 - LED count and colors
 - WLED device IP address
 - Work schedule for each day
-- Whether to enable Google Calendar integration
 
 ## License
 
