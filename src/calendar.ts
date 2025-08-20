@@ -12,7 +12,7 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
     tmr.setDate(today.getDate() + 1);
     const todayString = today.toISOString().split("T")[0];
     const tmrString = tmr.toISOString().split("T")[0];
-    const command = `GCALCLI_CONFIG=/opt/ndomino/hometime/config.toml gcalcli agenda --tsv --military ${todayString} ${tmrString}`;
+    const command = `gcalcli agenda --tsv --military ${todayString} ${tmrString}`;
 
     const { stdout } = await execAsync(command);
     const events: CalendarEvent[] = [];
