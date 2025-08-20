@@ -62,7 +62,7 @@ export class WLEDClient {
 
       if (colorChanged) {
         // Create segment for current color block
-        currentColor = currentColor.map((i) => Math.floor(i)) as [number, number, number];
+        // currentColor = currentColor.map((i) => Math.floor(i)) as [number, number, number];
 
         const currentSegment: WLEDSegment = {
           id: segmentId++,
@@ -71,8 +71,9 @@ export class WLEDClient {
           col: [currentColor],
         };
         if (currentColor === config.barColor) {
-          currentSegment.bri = 25;
+          currentSegment.bri = 5;
         }
+
         segments.push(currentSegment);
 
         // Start new segment
