@@ -71,7 +71,7 @@ export class WLEDClient {
           col: [currentColor],
         };
         if (currentColor === config.barColor) {
-          currentSegment.bri = 10;
+          currentSegment.bri = 25;
         }
         segments.push(currentSegment);
 
