@@ -1,5 +1,5 @@
 import { config } from "./config";
-import type { WLEDState } from "./types";
+import type { WLEDState, WLEDSegment } from "./types";
 
 export class WLEDClient {
   private baseUrl: string;
@@ -64,7 +64,7 @@ export class WLEDClient {
         // Create segment for current color block
         currentColor = currentColor.map((i) => Math.floor(i)) as [number, number, number];
 
-        const currentSegment = {
+        const currentSegment: WLEDSegment = {
           id: segmentId++,
           start: segmentStart,
           stop: i,

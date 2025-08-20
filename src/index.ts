@@ -5,7 +5,6 @@ import { getTodayEvents } from "./calendar";
 import { WLEDClient } from "./wled";
 import { LEDVisualizer } from "./visualization";
 import { getScheduleForDay, isAtWork } from "./schedule";
-import type { CalendarEvent } from "./types";
 
 class HometimeServer {
   private wled: WLEDClient;
@@ -86,7 +85,7 @@ class HometimeServer {
     console.log("Hometime Server starting...");
 
     try {
-      // await this.visualizer.turnOff();
+      await this.visualizer.turnOff();
       await this.updateDisplay();
 
       // Run every 5 min
@@ -105,7 +104,7 @@ class HometimeServer {
   public async stop(): Promise<void> {
     console.log("Hometime Server stopping...");
     try {
-      // await this.visualizer.turnOff();
+      await this.visualizer.turnOff();
     } catch (error) {
       console.error("Error turning off LEDs during shutdown:", error);
     }

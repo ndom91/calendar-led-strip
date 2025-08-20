@@ -31,7 +31,7 @@ export interface Config {
   barBrightness: number;
 }
 
-interface WLEDSegment {
+export interface WLEDSegment {
   id: number;
   start: number;
   stop: number;
