@@ -29,6 +29,9 @@ A typescript rewrite of this [hometime](https://github.com/veebch/hometime) proj
 
 4. Adjust work schedule and LED settings in `src/config.ts`
 
+5. Finally, ensure you can at least successfully run a gcalcli command like `gcalcli
+   agenda` with the user that's going to be running this server.
+
 ## Usage
 
 ### Development
@@ -41,6 +44,9 @@ pnpm run dev
 pnpm run build
 pnpm start
 ```
+
+To run this as a service, there is a demo systemd service file available at `hometime.service`. If you decide to use it, don't forget to double check and update variables like the working directory and the path to your `GCALCLI_CONFIG`.
+
 
 ## Configuration
 
