@@ -4,6 +4,8 @@
 
 A typescript rewrite of this [hometime](https://github.com/veebch/hometime) project. Instead of runnign this on a Raspberry Pi Pico, for example, this node script is run on a server in your house and will update a WLED-controlled LED Strip via its API.
 
+![example](./hometime.jpg)
+
 ## Features
 
 - **Work Progress Bar**: Shows current progress through your work day as a colored bar on the LED strip
