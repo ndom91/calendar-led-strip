@@ -1,74 +1,56 @@
-[![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCz5BOU9J9pB_O0B8-rDjCWQ?label=YouTube&style=social)](https://www.youtube.com/channel/UCz5BOU9J9pB_O0B8-rDjCWQ)
+# Hometime Server
 
-[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/v_e_e_b/)
+A TypeScript server that visualizes work progress and calendar events on a WLED-controlled LED strip.
 
+## Features
 
-# Hometime: A work/school day progress bar
+- **Work Progress Bar**: Shows current progress through your work day as a colored bar on the LED strip
+- **Calendar Integration**: Uses `gcalcli` to fetch today's calendar events and highlights them on the strip
+- **WLED Integration**: Controls LED strips via WLED API at configurable IP address
+- **Configurable Schedule**: Set work hours for each day of the week
+- **Visual Effects**: Rainbow celebration when work day ends, flashing effects for events
 
-A physical LED progress bar for the working day that includes information from Google Calendar. The bar uses an addressable led strip and a Raspberry Pi Pico W. It:
+## Setup
 
-- keeps you posted on how much of the workday has already passed, 
-- flashes when it's time for an event, 
-- rewards you with a pretty rainbow at hometime.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Video
+2. Make sure `gcalcli` is installed and configured on your system:
+   ```bash
+   # Install gcalcli (varies by system)
+   pip install gcalcli
+   
+   # Configure authentication
+   gcalcli list
+   ```
 
-Tap on the picture for a video of it being assembled and working as part of a home made whiteboard.
+3. Configure your WLED device IP in `src/config.ts`
 
-[![Video](https://img.youtube.com/vi/MDij1lKcI70/maxresdefault.jpg)](https://www.youtube.com/watch?v=MDij1lKcI70)
+4. Adjust work schedule and LED settings in `src/config.ts`
 
-## How it works
+## Usage
 
-The progress bar displays your progress through the working day. It connects to wifi, grabs the time from a [time api](https://timeapi.io), then shows you how far through the day you are.
-
-There's also an optional and slightly elaborate link between Google Calendar and the bar. A computer running [gcalcli](https://github.com/insanum/gcalcli) on the LAN checks the agenda every few minutes and then pops the result on a local webserver. The script on the Pico checks that file and adds event start times as coloured dots. The file `serverscript.py` takes care of this.
-
-
-If it is outside work hours, no lights show.
-
-## Hardware
-
-- Raspberry Pi Pico W
-- 1 m, 144 LED, 5V Addressable LED strip (we used a WS2812B Eco)
-
-## Assembly
-
-Attach the Light Strip to the Pico as described below:
-
-| [Pico GPIO](https://www.elektronik-kompendium.de/sites/raspberry-pi/bilder/raspberry-pi-pico-gpio.png) | Light Strip|
-|-----------|------|
-|   VBUS     | VCC  |
-|   GND      | GND  |
-|   15      | DATA  |
-
-## Installing
-
-Download a `uf2` image and install it on the Pico W according to the [instructions](https://www.raspberrypi.com/documentation/microcontrollers/micropython.html#drag-and-drop-micropython) on the Raspberry Pi website.
-
-Clone this repository to your computer using the commands (from a terminal):
-
+### Development
+```bash
+npm run dev
 ```
-cd ~
-git clone https://github.com/veebch/hometime.git
-cd hometime
-mv secrets_example.py secrets.py
-```
-Edit secrets.py to contain your WiFi credentials and (optionally) the url of your Google Calendar schedule. The schedule is created by running serverscript.py on a machine with gcalcli on, and a web server. For automation **systemd** or **cron** will automate running `serverscript.py` nicely. 
 
-Check the port of the pico with the port listing command:
+### Production
+```bash
+npm run build
+npm start
 ```
-python -m serial.tools.list_ports
-```
-Now, using the port path (in our case `/dev/ttyACM0`) copy the contents to the repository by installing [ampy](https://pypi.org/project/adafruit-ampy/) and using  and the commands:
-
-```
-ampy -p /dev/ttyACM0 put main.py 
-ampy -p /dev/ttyACM0 put secrets.py
-```
-(*nb. make sure you are using the right port name, as shown in the port listing command above*)
-
-Done! All the required files should now be on the Pico. Whenever you sconnect to USB power the script will autorun.
 
 ## Configuration
 
-You can edit the code to give your start/end time for each day. That, and a number of other parameters are in `main.py`
+Edit `src/config.ts` to customize:
+- LED count and colors
+- WLED device IP address  
+- Work schedule for each day
+- Whether to enable Google Calendar integration
+
+## Original Python Version
+
+This TypeScript version replaces the original MicroPython implementation that ran on Raspberry Pi Pico, now running on your x86 server with WLED API integration instead of direct NeoPixel control.
