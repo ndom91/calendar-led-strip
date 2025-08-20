@@ -1,5 +1,5 @@
-import { Schedule, ScheduleEntry } from './types';
-import { getWeekdayName } from './time';
+import { getWeekdayName } from "./time";
+import type { Schedule, ScheduleEntry } from "./types";
 
 export function getScheduleForDay(schedule: Schedule, date: Date): ScheduleEntry {
   const dayName = getWeekdayName(date);
@@ -12,22 +12,22 @@ export function isAtWork(clockin: number, clockout: number, currentHours: number
 }
 
 export function hourToIndex(
-  hoursIn: number, 
-  clockin: number, 
-  clockout: number, 
-  ledCount: number, 
-  flip: boolean
+  hoursIn: number,
+  clockin: number,
+  clockout: number,
+  ledCount: number,
+  flip: boolean,
 ): number {
-  const index = Math.floor(ledCount * (hoursIn - clockin) / (clockout - clockin));
-  
+  const index = Math.floor((ledCount * (hoursIn - clockin)) / (clockout - clockin));
+
   if (flip) {
     return ledCount - 1 - index;
   }
-  
+
   if (index <= 1 || index >= ledCount) {
     return -1;
   }
-  
+
   return index;
 }
 

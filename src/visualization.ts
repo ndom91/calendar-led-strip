@@ -1,6 +1,6 @@
-import { Config } from './types';
-import { WLEDClient } from './wled';
-import { hourToIndex, isValidIndex } from './schedule';
+import type { Config, CalendarEvent } from "./types";
+import type { WLEDClient } from "./wled";
+import { hourToIndex, isValidIndex } from "./schedule";
 
 export class LEDVisualizer {
   private wled: WLEDClient;
@@ -17,8 +17,14 @@ export class LEDVisualizer {
 
   async drawBar(currentHours: number, clockin: number, clockout: number): Promise<void> {
     const pixels = this.createEmptyPixels();
-    const barUpTo = hourToIndex(currentHours, clockin, clockout, this.config.ledCount, this.config.flip);
-    
+    const barUpTo = hourToIndex(
+      currentHours,
+      clockin,
+      clockout,
+      this.config.ledCount,
+      this.config.flip,
+    );
+
     for (let i = 0; i < this.config.ledCount; i++) {
       if (this.config.flip) {
         if (i >= barUpTo) {
@@ -30,76 +36,127 @@ export class LEDVisualizer {
         }
       }
     }
-    
+
     await this.wled.setLEDs(pixels);
   }
 
-  async addEvents(events: number[], clockin: number, clockout: number): Promise<void> {
+  async displayWorkDay(
+    currentHours: number,
+    clockin: number,
+    clockout: number,
+    events: CalendarEvent[],
+  ): Promise<void> {
     const pixels = this.createEmptyPixels();
-    
-    // First draw the bar
-    const currentHours = new Date().getHours() + new Date().getMinutes() / 60;
-    const barUpTo = hourToIndex(currentHours, clockin, clockout, this.config.ledCount, this.config.flip);
-    
+
+    // Fill work day background with bar color
     for (let i = 0; i < this.config.ledCount; i++) {
-      if (this.config.flip) {
-        if (i >= barUpTo) {
-          pixels[i] = this.config.barColor as [number, number, number];
-        }
-      } else {
-        if (i <= barUpTo) {
-          pixels[i] = this.config.barColor as [number, number, number];
+      pixels[i] = this.config.barColor as [number, number, number];
+    }
+
+    // Overlay event blocks
+    for (const event of events) {
+      const startIndex = hourToIndex(
+        event.startTime,
+        clockin,
+        clockout,
+        this.config.ledCount,
+        this.config.flip,
+      );
+      const endIndex = hourToIndex(
+        event.endTime,
+        clockin,
+        clockout,
+        this.config.ledCount,
+        this.config.flip,
+      );
+
+      if (startIndex >= 0 && endIndex >= 0) {
+        const minIndex = Math.min(startIndex, endIndex);
+        const maxIndex = Math.max(startIndex, endIndex);
+
+        for (let i = minIndex; i <= maxIndex; i++) {
+          if (isValidIndex(i, this.config.ledCount)) {
+            pixels[i] = this.config.eventColor as [number, number, number];
+          }
         }
       }
     }
-    
-    // Then overlay events
-    for (const eventTime of events) {
-      const index = hourToIndex(eventTime, clockin, clockout, this.config.ledCount, this.config.flip);
-      if (isValidIndex(index, this.config.ledCount)) {
-        pixels[index] = this.config.eventColor as [number, number, number];
-      }
+
+    // Add current time indicator (always on top)
+    const currentIndex = hourToIndex(
+      currentHours,
+      clockin,
+      clockout,
+      this.config.ledCount,
+      this.config.flip,
+    );
+    if (isValidIndex(currentIndex, this.config.ledCount)) {
+      pixels[currentIndex] = this.config.currentTimeColor as [number, number, number];
     }
-    
+
     await this.wled.setLEDs(pixels);
   }
 
-  async flashEvents(intensity: number = 1): Promise<void> {
-    const pixels = this.createEmptyPixels();
-    
-    for (let i = 0; i < this.config.ledCount; i++) {
-      const [r, g, b] = this.config.eventColor;
-      pixels[i] = [r * intensity, g * intensity, b * intensity];
-    }
-    
-    await this.wled.setLEDs(pixels);
+  isCurrentlyInEvent(currentHours: number, events: CalendarEvent[]): boolean {
+    return events.some((event) => currentHours >= event.startTime && currentHours <= event.endTime);
   }
 
-  async flashBarTip(currentHours: number, clockin: number, clockout: number, intensity: number = 1): Promise<void> {
+  async flashCurrentTimeIndicator(
+    currentHours: number,
+    clockin: number,
+    clockout: number,
+    events: CalendarEvent[],
+    intensity: number = 1,
+  ): Promise<void> {
     const pixels = this.createEmptyPixels();
-    
-    // Draw the full bar first
-    const barUpTo = hourToIndex(currentHours, clockin, clockout, this.config.ledCount, this.config.flip);
-    
+
+    // Fill work day background with bar color
     for (let i = 0; i < this.config.ledCount; i++) {
-      if (this.config.flip) {
-        if (i >= barUpTo) {
-          pixels[i] = this.config.barColor as [number, number, number];
-        }
-      } else {
-        if (i <= barUpTo) {
-          pixels[i] = this.config.barColor as [number, number, number];
+      pixels[i] = this.config.barColor as [number, number, number];
+    }
+
+    // Overlay event blocks
+    for (const event of events) {
+      const startIndex = hourToIndex(
+        event.startTime,
+        clockin,
+        clockout,
+        this.config.ledCount,
+        this.config.flip,
+      );
+      const endIndex = hourToIndex(
+        event.endTime,
+        clockin,
+        clockout,
+        this.config.ledCount,
+        this.config.flip,
+      );
+
+      if (startIndex >= 0 && endIndex >= 0) {
+        const minIndex = Math.min(startIndex, endIndex);
+        const maxIndex = Math.max(startIndex, endIndex);
+
+        for (let i = minIndex; i <= maxIndex; i++) {
+          if (isValidIndex(i, this.config.ledCount)) {
+            pixels[i] = this.config.eventColor as [number, number, number];
+          }
         }
       }
     }
-    
-    // Flash the tip
-    const tipIndex = Math.min(barUpTo, this.config.ledCount - 1);
-    if (isValidIndex(tipIndex, this.config.ledCount)) {
-      const [r, g, b] = this.config.barColor;
-      pixels[tipIndex] = [r * intensity, g * intensity, b * intensity];
+
+    // Flash the current time indicator
+    const currentIndex = hourToIndex(
+      currentHours,
+      clockin,
+      clockout,
+      this.config.ledCount,
+      this.config.flip,
+    );
+    if (isValidIndex(currentIndex, this.config.ledCount)) {
+      const [r, g, b] = this.config.currentTimeColor;
+      pixels[currentIndex] = [r * intensity, g * intensity, b * intensity];
     }
-    
+
     await this.wled.setLEDs(pixels);
   }
 
@@ -120,17 +177,17 @@ export class LEDVisualizer {
   async rainbowCycle(duration: number = 5000): Promise<void> {
     const steps = 255;
     const stepDelay = duration / steps;
-    
+
     for (let j = 0; j < steps; j++) {
       const pixels = this.createEmptyPixels();
-      
+
       for (let i = 0; i < this.config.ledCount; i++) {
-        const pixelIndex = (i * 256 / this.config.ledCount) + j;
+        const pixelIndex = (i * 256) / this.config.ledCount + j;
         pixels[i] = this.wheel(Math.floor(pixelIndex) & 255);
       }
-      
+
       await this.wled.setLEDs(pixels);
-      await new Promise(resolve => setTimeout(resolve, stepDelay));
+      await new Promise((resolve) => setTimeout(resolve, stepDelay));
     }
   }
 

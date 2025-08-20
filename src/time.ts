@@ -1,9 +1,19 @@
+import type { Schedule } from "./types";
+
 export function getCurrentTime(): Date {
   return new Date();
 }
 
-export function getWeekdayName(date: Date): keyof typeof import('./types').Schedule {
-  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+export function getWeekdayName(date: Date): keyof Schedule {
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ] as const;
   return days[date.getDay()];
 }
 

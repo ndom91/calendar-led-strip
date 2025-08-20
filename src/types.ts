@@ -13,10 +13,17 @@ export interface Schedule {
   sunday: ScheduleEntry[];
 }
 
+export interface CalendarEvent {
+  startTime: number;
+  endTime: number;
+  title?: string;
+}
+
 export interface Config {
   ledCount: number;
   barColor: [number, number, number];
   eventColor: [number, number, number];
+  currentTimeColor: [number, number, number];
   flip: boolean;
   googleCalEnabled: boolean;
   wledUrl: string;
