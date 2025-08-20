@@ -1,6 +1,8 @@
 # Hometime Server
 
-A TypeScript server that visualizes work progress and calendar events on a WLED-controlled LED strip.
+> A TypeScript server that visualizes work progress and calendar events on a WLED-controlled LED strip.
+
+A typescript rewrite of this [hometime](https://github.com/veebch/hometime) project. Instead of runnign this on a Raspberry Pi Pico, for example, this node script is run on a server in your house and will update a WLED-controlled LED Strip via its API.
 
 ## Features
 
@@ -14,16 +16,13 @@ A TypeScript server that visualizes work progress and calendar events on a WLED-
 
 1. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. Make sure `gcalcli` is installed and configured on your system:
    ```bash
-   # Install gcalcli (varies by system)
    pip install gcalcli
-   
-   # Configure authentication
-   gcalcli list
+   gcalcli init
    ```
 
 3. Configure your WLED device IP in `src/config.ts`
@@ -34,23 +33,23 @@ A TypeScript server that visualizes work progress and calendar events on a WLED-
 
 ### Development
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ### Production
 ```bash
-npm run build
-npm start
+pnpm run build
+pnpm start
 ```
 
 ## Configuration
 
 Edit `src/config.ts` to customize:
 - LED count and colors
-- WLED device IP address  
+- WLED device IP address
 - Work schedule for each day
 - Whether to enable Google Calendar integration
 
-## Original Python Version
+## License
 
-This TypeScript version replaces the original MicroPython implementation that ran on Raspberry Pi Pico, now running on your x86 server with WLED API integration instead of direct NeoPixel control.
+MIT
