@@ -1,8 +1,8 @@
-# Hometime Server
+# Hometime Server 🔴🟠🟡🟢🔵🟣
 
-> A TypeScript server that visualizes calendar events on a WLED-controlled LED strip.
+> A TypeScript project that visualizes calendar events on any WLED-controlled LED strips
 
-A typescript rewrite of this [hometime](https://github.com/veebch/hometime) project. Instead of runnign this on a Raspberry Pi Pico, for example, this node script is run on a server in your house and will update a WLED-controlled LED Strip via its API.
+This is a complete rewrite and rethink of this original [hometime](https://github.com/veebch/hometime) project. Instead of running the code on a Raspberry Pi Pico connected directly to some NeoPixels, for example, this Node script is run on a server in your LAN and will update any WLED-controlled LED Strip via their API.
 
 ![example](./hometime.png)
 
