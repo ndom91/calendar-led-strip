@@ -31,16 +31,18 @@ export interface Config {
   barBrightness: number;
 }
 
+interface WLEDSegment {
+  id: number;
+  start: number;
+  stop: number;
+  bri?: number;
+  col: Array<[number, number, number]>;
+}
+
 export interface WLEDState {
   on: boolean;
   bri: number;
   transition?: number;
   v?: boolean; //verbose
-  seg: Array<{
-    id: number;
-    start: number;
-    stop: number;
-    bri?: number;
-    col: Array<[number, number, number]>;
-  }>;
+  seg: WLEDSegment[];
 }
