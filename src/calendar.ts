@@ -1,4 +1,5 @@
 import { exec } from "node:child_process";
+import { config } from "./config";
 import { promisify } from "node:util";
 import type { CalendarEvent } from "./types";
 
@@ -39,11 +40,13 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
             const endMinutes = parseInt(endMatch[2], 10);
             const endTime = endHours + endMinutes / 60;
 
-            console.log("EVENT_PARSED", {
-              startTime,
-              endTime,
-              title: columns[4] || "Unknown Event",
-            });
+            if (config.debug) {
+              console.log("EVENT_PARSED", {
+                startTime,
+                endTime,
+                title: columns[4] || "Unknown Event",
+              });
+            }
 
             events.push({
               startTime,
@@ -55,7 +58,6 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
       }
     }
 
-    console.log("events", events);
     return events;
   } catch (error) {
     console.error("Error fetching calendar events:", error);

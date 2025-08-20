@@ -2,11 +2,12 @@ import type { Config } from "./types";
 
 export const config: Config = {
   ledCount: 100,
-  barColor: [0, 25, 0],
-  eventColor: [0, 0, 255],
+  barColor: [239, 169, 219],
+  barBrightness: 125,
+  eventColor: [25, 191, 111],
   currentTimeColor: [152, 80, 32],
   flip: false,
-  googleCalEnabled: true,
+  debug: false,
   wledUrl: "http://10.0.2.29",
   schedule: {
     monday: [{ clockin: "9", clockout: "20" }],

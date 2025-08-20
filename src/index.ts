@@ -32,12 +32,7 @@ class HometimeServer {
       if (working) {
         this.hasShownRainbowToday = false;
 
-        // Get calendar events if enabled
-        let events: CalendarEvent[] = [];
-
-        if (config.googleCalEnabled) {
-          events = await getTodayEvents();
-        }
+        const events = await getTodayEvents();
 
         // Update display with current progress and events
         await this.visualizer.displayWorkDay(currentHours, clockin, clockout, events);
@@ -91,14 +86,11 @@ class HometimeServer {
     console.log("Hometime Server starting...");
 
     try {
-      // Turn off LEDs on startup
-      await this.visualizer.turnOff();
-
-      // Initial update
+      // await this.visualizer.turnOff();
       await this.updateDisplay();
 
-      // Schedule updates every second (like the original)
-      cron.schedule("* * * * * *", async () => {
+      // Run every 5 min
+      cron.schedule("*/5 * * * *", async () => {
         await this.updateDisplay();
         this.checkForSpecialReset();
       });
@@ -113,7 +105,7 @@ class HometimeServer {
   public async stop(): Promise<void> {
     console.log("Hometime Server stopping...");
     try {
-      await this.visualizer.turnOff();
+      // await this.visualizer.turnOff();
     } catch (error) {
       console.error("Error turning off LEDs during shutdown:", error);
     }

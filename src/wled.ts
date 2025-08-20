@@ -1,4 +1,5 @@
 import axios from "axios";
+import { config } from "./config";
 import type { WLEDState } from "./types";
 
 export class WLEDClient {
@@ -10,34 +11,94 @@ export class WLEDClient {
 
   async setState(state: Partial<WLEDState>): Promise<void> {
     try {
-      await axios.post(`${this.baseUrl}/json/state`, state, {
+      console.log("Setting WLED State", JSON.stringify(state, null, 2));
+      const req = await fetch(`${this.baseUrl}/json/state`, {
+        method: "POST",
+        body: JSON.stringify(state),
         headers: { "Content-Type": "application/json" },
-        timeout: 5000,
       });
+      const response = await req.json();
+
+      if (config.debug) {
+        console.log("WLED API Response", JSON.stringify(response, null, 2));
+      }
     } catch (error) {
       console.error("Error setting WLED state:", error);
       throw error;
     }
   }
 
-  async setLEDs(pixels: Array<[number, number, number]>): Promise<void> {
-    const colors: number[] = [];
+  private groupPixelsIntoSegments(pixels: Array<[number, number, number]>): Array<{
+    id: number;
+    start: number;
+    stop: number;
+    col: Array<[number, number, number]>;
+  }> {
+    if (pixels.length === 0) return [];
 
-    // Convert RGB tuples to flat array expected by WLED
-    for (const [r, g, b] of pixels) {
-      colors.push(r, g, b);
+    if (config.debug) {
+      console.log("GENERATED PIXELS", pixels);
     }
+
+    const segments: Array<{
+      id: number;
+      start: number;
+      stop: number;
+      col: Array<[number, number, number]>;
+    }> = [];
+
+    let currentColor = pixels[0];
+    let segmentStart = 0;
+    let segmentId = 0;
+
+    for (let i = 1; i <= pixels.length; i++) {
+      const nextColor = i < pixels.length ? pixels[i] : null;
+
+      // Check if color changed or we're at the end
+      const colorChanged =
+        !nextColor ||
+        currentColor[0] !== nextColor[0] ||
+        currentColor[1] !== nextColor[1] ||
+        currentColor[2] !== nextColor[2];
+
+      if (colorChanged) {
+        // Create segment for current color block
+        currentColor = currentColor.map((i) => Math.floor(i)) as [number, number, number];
+
+        const currentSegment = {
+          id: segmentId++,
+          start: segmentStart,
+          stop: i,
+          col: [currentColor],
+        };
+        if (currentColor === config.barColor) {
+          currentSegment.bri = 10;
+        }
+        segments.push(currentSegment);
+
+        // Start new segment
+        if (nextColor) {
+          currentColor = nextColor;
+          segmentStart = i;
+        }
+      }
+    }
+
+    if (config.debug) {
+      console.log("GENERATED SEGMENTS", JSON.stringify(segments, null, 2));
+    }
+    return segments;
+  }
+
+  async setLEDs(pixels: Array<[number, number, number]>): Promise<void> {
+    const segments = this.groupPixelsIntoSegments(pixels);
 
     const state: Partial<WLEDState> = {
       on: true,
-      seg: [
-        {
-          id: 0,
-          start: 0,
-          stop: pixels.length,
-          col: pixels,
-        },
-      ],
+      bri: config.barBrightness,
+      transition: 5,
+      v: config.debug,
+      seg: segments,
     };
 
     await this.setState(state);

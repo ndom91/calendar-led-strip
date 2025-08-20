@@ -25,18 +25,22 @@ export interface Config {
   eventColor: [number, number, number];
   currentTimeColor: [number, number, number];
   flip: boolean;
-  googleCalEnabled: boolean;
   wledUrl: string;
   schedule: Schedule;
+  debug: boolean;
+  barBrightness: number;
 }
 
 export interface WLEDState {
   on: boolean;
   bri: number;
+  transition?: number;
+  v?: boolean; //verbose
   seg: Array<{
     id: number;
     start: number;
     stop: number;
+    bri?: number;
     col: Array<[number, number, number]>;
   }>;
 }

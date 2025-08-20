@@ -9,7 +9,7 @@
     "dev": "tsx src/index.ts",
     "lint": "biome lint --write",
     "format": "biome format --write",
-    "type-check": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "axios": "^1.6.2",
