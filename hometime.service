@@ -4,25 +4,15 @@ After=network.target
 
 [Service]
 Type=simple
-User=ndomino
+User=pi
 WorkingDirectory=/opt/ndomino/hometime
-ExecStart=/usr/bin/node dist/index.js
+ExecStart=node dist/index.js
 Restart=always
 RestartSec=10
+Environment=GCALCLI_CONFIG=/opt/ndomino/hometime/config.toml
 Environment=NODE_ENV=production
-# Environment=PATH=/usr/local/bin:/usr/bin:/bin
-
-# Logging
-# StandardOutput=journal
-# StandardError=journal
-SyslogIdentifier=hometime-server
-
-# Security
-NoNewPrivileges=yes
-ProtectSystem=strict
-ProtectHome=yes
-ReadWritePaths=/opt/ndomino/hometime
-PrivateTmp=yes
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+SyslogIdentifier=hometime
 
 [Install]
 WantedBy=multi-user.target
