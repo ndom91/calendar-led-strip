@@ -36,7 +36,7 @@ interface WLEDSegment {
   start: number;
   stop: number;
   bri?: number;
-  col: Array<[number, number, number]>;
+  col: [number, number, number][];
 }
 
 export interface WLEDState {
