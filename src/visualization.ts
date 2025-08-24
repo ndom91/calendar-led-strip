@@ -1,6 +1,6 @@
 import { consola } from "consola";
 import { hourToIndex, isValidIndex } from "./schedule";
-import type { CalendarEvent, Config } from "./types";
+import type { CalendarEvent, Config, WLEDColor } from "./types";
 import type { WLEDClient } from "./wled";
 
 export class LEDVisualizer {
@@ -12,8 +12,8 @@ export class LEDVisualizer {
     this.config = config;
   }
 
-  private createEmptyPixels(): Array<[number, number, number]> {
-    return Array(this.config.ledCount).fill([0, 0, 0]) as Array<[number, number, number]>;
+  private createEmptyPixels(): WLEDColor[] {
+    return Array(this.config.ledCount).fill([0, 0, 0]) as WLEDColor[];
   }
 
   async displayWorkDay(

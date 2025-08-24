@@ -1,4 +1,5 @@
 import { consola } from "consola";
+import { box } from "consola/utils";
 import { config } from "./config";
 import type { WLEDColor, WLEDSegment, WLEDState } from "./types";
 
@@ -18,7 +19,10 @@ export class WLEDClient {
       const response = await req.json();
 
       if (config.debug) {
-        consola.info("WLED State", JSON.stringify(response, null, 2));
+        consola.info({
+          tag: "DEBUG",
+          message: `Current WLED State ${box(JSON.stringify(response, null, 2))}`,
+        });
       }
       return response as WLEDState;
     } catch (error) {
@@ -30,7 +34,10 @@ export class WLEDClient {
   async setState(state: Partial<WLEDState>): Promise<void> {
     try {
       if (config.debug) {
-        consola.info("Setting WLED State", JSON.stringify(state, null, 2));
+        consola.info({
+          tag: "DEBUG",
+          message: `Setting WLED State ${box(JSON.stringify(state, null, 2))}`,
+        });
       }
       const req = await fetch(`${this.baseUrl}/json/state`, {
         method: "POST",
@@ -40,7 +47,10 @@ export class WLEDClient {
       const response = await req.json();
 
       if (config.debug) {
-        consola.info("WLED API Response", JSON.stringify(response, null, 2));
+        consola.info({
+          tag: "DEBUG",
+          message: `WLED API Response ${box(JSON.stringify(response, null, 2))}`,
+        });
       }
     } catch (error) {
       consola.error("Error setting WLED state:", error);
@@ -104,7 +114,7 @@ export class WLEDClient {
     return segments;
   }
 
-  async setLEDs(pixels: Array<[number, number, number]>): Promise<void> {
+  async setLEDs(pixels: WLEDColor[]): Promise<void> {
     const segments = this.groupPixelsIntoSegments(pixels);
 
     const state: Partial<WLEDState> = {
@@ -124,7 +134,7 @@ export class WLEDClient {
     if (availableSegmentIds) {
       await this.setState({
         on: false,
-        v: true,
+        v: config.debug,
         seg: [
           ...availableSegmentIds.map((id) => ({
             id,
@@ -137,10 +147,6 @@ export class WLEDClient {
         ],
       });
     }
-  }
-
-  async resetPreset(): Promise<void> {
-    await this.setState({ on: true, ps: 2 });
   }
 
   async setBrightness(brightness: number): Promise<void> {

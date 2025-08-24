@@ -1,4 +1,5 @@
 import { consola } from "consola";
+import { colorize } from "consola/utils";
 import cron from "node-cron";
 import { getTodayEvents } from "./calendar";
 import { config } from "./config";
@@ -25,7 +26,10 @@ class HometimeServer {
       const clockout = parseFloat(scheduleEntry.clockout);
 
       const working = isAtWork(clockin, clockout, currentHours);
-      consola.info(`Current time: ${currentHours.toFixed(2)}, Working: ${working}`);
+      consola.info(`Current time: ${colorize("magentaBright", now.toLocaleTimeString())}`);
+      consola.info(
+        `Working: ${colorize("magentaBright", working.toString())}${!working && " (LED Off)"}`,
+      );
 
       if (working) {
         const events = await getTodayEvents();
@@ -56,7 +60,7 @@ class HometimeServer {
         },
       );
 
-      consola.success("Hometime Server running. Press Ctrl+C to stop.");
+      consola.success(`Hometime Server running ${colorize("dim", "(Press Ctrl+C to stop)")}`);
     } catch (error) {
       consola.error("Failed to start Hometime Server:", error);
       process.exit(1);
