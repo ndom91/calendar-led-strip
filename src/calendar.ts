@@ -1,5 +1,6 @@
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
+import { consola } from "consola";
 import { config } from "./config";
 import type { CalendarEvent } from "./types";
 
@@ -23,10 +24,9 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
 
       const columns = line.split("\t");
       if (columns.length > 4) {
-        // Only process lines with both start_time and end_time
         if (columns[0] !== "start_date" && columns[1] !== "" && columns[3] !== "") {
-          const startTimeStr = columns[1]; // Start time column
-          const endTimeStr = columns[3]; // End time column
+          const startTimeStr = columns[1];
+          const endTimeStr = columns[3];
 
           const startMatch = startTimeStr.match(/(\d{1,2}):(\d{2})/);
           const endMatch = endTimeStr.match(/(\d{1,2}):(\d{2})/);
@@ -41,7 +41,7 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
             const endTime = endHours + endMinutes / 60;
 
             if (config.debug) {
-              console.log("EVENT_PARSED", {
+              consola.info("Event parsed", {
                 startTime,
                 endTime,
                 title: columns[4] || "Unknown Event",
@@ -60,7 +60,7 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
 
     return events;
   } catch (error) {
-    console.error("Error fetching calendar events:", error);
+    consola.error("Error fetching calendar events:", error);
     return [];
   }
 }

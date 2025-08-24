@@ -1,3 +1,4 @@
+import { consola } from "consola";
 import { hourToIndex, isValidIndex } from "./schedule";
 import type { CalendarEvent, Config } from "./types";
 import type { WLEDClient } from "./wled";
@@ -57,7 +58,7 @@ export class LEDVisualizer {
       }
     }
 
-    // Add current time indicator (always on top)
+    // Always on top - current time indicator
     const currentIndex = hourToIndex(
       currentHours,
       clockin,
@@ -73,6 +74,10 @@ export class LEDVisualizer {
   }
 
   async turnOff(): Promise<void> {
-    await this.wled.turnOff();
+    try {
+      await this.wled.turnOff();
+    } catch (offError) {
+      consola.error("Error turning off LEDs:", offError);
+    }
   }
 }
