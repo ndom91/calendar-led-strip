@@ -1,5 +1,5 @@
 import { config } from "./config";
-import type { WLEDState, WLEDSegment } from "./types";
+import type { WLEDSegment, WLEDState } from "./types";
 
 export class WLEDClient {
   private baseUrl: string;
@@ -10,7 +10,9 @@ export class WLEDClient {
 
   async setState(state: Partial<WLEDState>): Promise<void> {
     try {
-      console.log("Setting WLED State", JSON.stringify(state, null, 2));
+      if (config.debug) {
+        console.log("Setting WLED State", JSON.stringify(state, null, 2));
+      }
       const req = await fetch(`${this.baseUrl}/json/state`, {
         method: "POST",
         body: JSON.stringify(state),

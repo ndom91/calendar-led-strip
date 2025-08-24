@@ -1,10 +1,10 @@
-import * as cron from "node-cron";
-import { config } from "./config";
-import { getCurrentTime, getHoursIntoDay } from "./time";
+import cron from "node-cron";
 import { getTodayEvents } from "./calendar";
-import { WLEDClient } from "./wled";
-import { LEDVisualizer } from "./visualization";
+import { config } from "./config";
 import { getScheduleForDay, isAtWork } from "./schedule";
+import { getCurrentTime, getHoursIntoDay } from "./time";
+import { LEDVisualizer } from "./visualization";
+import { WLEDClient } from "./wled";
 
 class HometimeServer {
   private wled: WLEDClient;

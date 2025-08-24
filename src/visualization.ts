@@ -1,6 +1,6 @@
-import type { Config, CalendarEvent } from "./types";
-import type { WLEDClient } from "./wled";
 import { hourToIndex, isValidIndex } from "./schedule";
+import type { CalendarEvent, Config } from "./types";
+import type { WLEDClient } from "./wled";
 
 export class LEDVisualizer {
   private wled: WLEDClient;
@@ -100,7 +100,6 @@ export class LEDVisualizer {
   isCurrentlyInEvent(currentHours: number, events: CalendarEvent[]): boolean {
     return events.some((event) => currentHours >= event.startTime && currentHours <= event.endTime);
   }
-
 
   private wheel(pos: number): [number, number, number] {
     if (pos < 0 || pos > 255) {

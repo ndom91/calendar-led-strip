@@ -1,6 +1,6 @@
 import { exec } from "node:child_process";
-import { config } from "./config";
 import { promisify } from "node:util";
+import { config } from "./config";
 import type { CalendarEvent } from "./types";
 
 const execAsync = promisify(exec);
