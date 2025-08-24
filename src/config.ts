@@ -15,7 +15,7 @@ export const config: Config = {
     wednesday: [{ clockin: "9", clockout: "21" }],
     thursday: [{ clockin: "9", clockout: "21" }],
     friday: [{ clockin: "9", clockout: "21" }],
-    saturday: [{ clockin: "0", clockout: "0" }],
-    sunday: [{ clockin: "0", clockout: "0" }],
+    saturday: [{ clockin: "9", clockout: "21" }],
+    sunday: [{ clockin: "9", clockout: "21" }],
   },
 };

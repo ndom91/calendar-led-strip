@@ -9,7 +9,8 @@ export async function getTodayEvents(): Promise<CalendarEvent[]> {
   try {
     const today = new Date();
     const tmr = new Date();
-    tmr.setDate(today.getDate() + 1);
+    today.setDate(today.getDate() + 1);
+    tmr.setDate(today.getDate() + 2);
     const todayString = today.toISOString().split("T")[0];
     const tmrString = tmr.toISOString().split("T")[0];
     const command = `gcalcli agenda --tsv --military ${todayString} ${tmrString}`;

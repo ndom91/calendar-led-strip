@@ -1,11 +1,29 @@
 import { config } from "./config";
-import type { WLEDSegment, WLEDState } from "./types";
+import type { WLEDColor, WLEDSegment, WLEDState } from "./types";
 
 export class WLEDClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
+    this.baseUrl = baseUrl.replace(/\/$/, "");
+  }
+
+  async getState(): Promise<WLEDState> {
+    try {
+      const req = await fetch(`${this.baseUrl}/json/state`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const response = await req.json();
+
+      if (config.debug) {
+        console.log("WLED State", JSON.stringify(response, null, 2));
+      }
+      return response as WLEDState;
+    } catch (error) {
+      console.error("Error setting WLED state:", error);
+      throw error;
+    }
   }
 
   async setState(state: Partial<WLEDState>): Promise<void> {
@@ -29,25 +47,19 @@ export class WLEDClient {
     }
   }
 
-  private groupPixelsIntoSegments(pixels: Array<[number, number, number]>): Array<{
-    id: number;
-    start: number;
-    stop: number;
-    col: Array<[number, number, number]>;
-  }> {
+  private groupPixelsIntoSegments(pixels: WLEDColor[]): WLEDSegment[] {
     if (pixels.length === 0) return [];
 
     if (config.debug) {
       console.log("GENERATED PIXELS", pixels);
     }
 
-    const segments: Array<{
-      id: number;
-      start: number;
-      stop: number;
-      col: Array<[number, number, number]>;
-    }> = [];
-
+    const segments: WLEDSegment[] = [
+      {
+        id: 0,
+        stop: 0,
+      },
+    ];
     let currentColor = pixels[0];
     let segmentStart = 0;
     let segmentId = 0;
@@ -63,14 +75,13 @@ export class WLEDClient {
         currentColor[2] !== nextColor[2];
 
       if (colorChanged) {
-        // Create segment for current color block
-        // currentColor = currentColor.map((i) => Math.floor(i)) as [number, number, number];
-
         const currentSegment: WLEDSegment = {
           id: segmentId++,
           start: segmentStart,
           stop: i,
           col: [currentColor],
+          fx: 0,
+          pal: 0,
         };
         if (currentColor === config.barColor) {
           currentSegment.bri = 10;
@@ -98,16 +109,40 @@ export class WLEDClient {
     const state: Partial<WLEDState> = {
       on: true,
       bri: config.barBrightness,
-      transition: 5,
       v: config.debug,
       seg: segments,
+      // seg: {
+      //   i: pixels,
+      // },
     };
 
     await this.setState(state);
   }
 
   async turnOff(): Promise<void> {
-    await this.setState({ on: false });
+    const state = await this.getState();
+    console.log("turnOff.state", state);
+    const availableSegmentIds = state.seg?.map((i) => i.id);
+    if (availableSegmentIds) {
+      await this.setState({
+        on: false,
+        v: true,
+        seg: [
+          ...availableSegmentIds.map((id) => ({
+            id,
+            stop: 0,
+          })),
+          {
+            id: 0,
+            stop: config.ledCount,
+          },
+        ],
+      });
+    }
+  }
+
+  async resetPreset(): Promise<void> {
+    await this.setState({ on: true, ps: 2 });
   }
 
   async setBrightness(brightness: number): Promise<void> {
