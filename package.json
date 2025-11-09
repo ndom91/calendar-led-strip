@@ -1,6 +1,6 @@
 {
   "name": "hometime-server",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "LED progress bar visualization for work hours and calendar events",
   "main": "dist/index.js",
   "scripts": {
