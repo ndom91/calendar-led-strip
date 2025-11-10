@@ -3,7 +3,7 @@ import type { Schedule, ScheduleEntry } from "./types";
 
 export function getScheduleForDay(schedule: Schedule, date: Date): ScheduleEntry {
   const dayName = getWeekdayName(date);
-  return schedule[dayName][2]; // Taking first entry for simplicity
+  return schedule[dayName][0]; // Taking first entry for simplicity
 }
 
 export function isAtWork(clockin: number, clockout: number, currentHours: number): boolean {
