@@ -2,7 +2,7 @@
 
 > TypeScript project to visualize calendar events on any WLED-controlled LED strip
 
-asdfThis project was inspired by the original [hometime](https://github.com/veebch/hometime) project. Instead of running the code on a Raspberry Pi Pico connected directly to some NeoPixels, for example, this Node script is run on a server in your LAN and will update any WLED-controlled LED Strip via its API.
+This project was inspired by the original [hometime](https://github.com/veebch/hometime) project. Instead of running the code on a Raspberry Pi Pico connected directly to some NeoPixels, for example, this Node script is run on a server in your LAN and will update any WLED-controlled LED Strip via its API.
 
 ![example](./hometime.png)
 
