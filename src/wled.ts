@@ -65,12 +65,7 @@ export class WLEDClient {
       consola.info("Generated Pixels", pixels);
     }
 
-    const segments: WLEDSegment[] = [
-      {
-        id: 0,
-        stop: 0,
-      },
-    ];
+    const segments: WLEDSegment[] = [];
     let currentColor = pixels[0];
     let segmentStart = 0;
     let segmentId = 0;
@@ -93,11 +88,14 @@ export class WLEDClient {
           col: [currentColor],
           fx: 0,
           pal: 0,
+          on: true,
         };
         if (currentColor[0] === config.barColor[0] && 
             currentColor[1] === config.barColor[1] && 
             currentColor[2] === config.barColor[2]) {
           currentSegment.bri = 10;
+        } else {
+          currentSegment.bri = 255;
         }
 
         segments.push(currentSegment);
@@ -118,6 +116,11 @@ export class WLEDClient {
 
   async setLEDs(pixels: WLEDColor[]): Promise<void> {
     const segments = this.groupPixelsIntoSegments(pixels);
+
+    // Clear existing segments first
+    await this.setState({
+      seg: [{ id: 0, stop: 0 }]
+    });
 
     const state: Partial<WLEDState> = {
       on: true,
