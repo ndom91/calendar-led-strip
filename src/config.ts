@@ -7,7 +7,7 @@ export const config: Config = {
   eventColor: [25, 191, 111],
   currentTimeColor: [152, 80, 32],
   flip: false,
-  debug: true,
+  debug: false,
   wledUrl: "http://10.0.2.29",
   schedule: {
     monday: [{ clockin: "9", clockout: "19" }],
