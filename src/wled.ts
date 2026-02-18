@@ -94,7 +94,9 @@ export class WLEDClient {
           fx: 0,
           pal: 0,
         };
-        if (currentColor === config.barColor) {
+        if (currentColor[0] === config.barColor[0] && 
+            currentColor[1] === config.barColor[1] && 
+            currentColor[2] === config.barColor[2]) {
           currentSegment.bri = 10;
         }
 
