@@ -58,7 +58,7 @@ export class LEDVisualizer {
       }
     }
 
-    // Always on top - current time indicator
+    // Always on top - current time indicator (3 pixels wide)
     const currentIndex = hourToIndex(
       currentHours,
       clockin,
@@ -67,7 +67,18 @@ export class LEDVisualizer {
       this.config.flip,
     );
     if (isValidIndex(currentIndex, this.config.ledCount)) {
+      // Center pixel
       pixels[currentIndex] = this.config.currentTimeColor;
+      
+      // Left pixel
+      if (isValidIndex(currentIndex - 1, this.config.ledCount)) {
+        pixels[currentIndex - 1] = this.config.currentTimeColor;
+      }
+      
+      // Right pixel
+      if (isValidIndex(currentIndex + 1, this.config.ledCount)) {
+        pixels[currentIndex + 1] = this.config.currentTimeColor;
+      }
     }
 
     await this.wled.setLEDs(pixels);
